@@ -36,6 +36,32 @@
 
   <script type='text/babel'>
 
+    class Loading extends React.Component {
+        constructor(){
+            super()
+
+            this.state = {
+                text: 'Loading'
+            }
+        }
+        componentDidMount() {
+            const stopper = this.state.text + '...'
+            
+            window.setInterval(() => {
+                this.setState(() => {
+                    return {
+
+                    }
+                })
+            }), 300)
+
+      
+        }
+        render() {
+            return <p>{this.state.text}</p>
+        }
+    }
+
     function ActiveFriends (props) {
       return (
         <div>
@@ -78,6 +104,7 @@
             this.state = {
             friends: [],
             input: '',
+            loading: true
             }
             this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
             this.updateInput = this.updateInput.bind(this)
@@ -94,7 +121,8 @@
                 .then((friends) => {
                     // console.log('FRIENDS', friends) 
                     this.setState({
-                        friends
+                        friends,
+                        loading: false
                     })
                 })
         }
@@ -152,6 +180,9 @@
 
       render() {
           console.log('--render--')
+          if (this.state.loading === true) {
+              return <Loading />
+          }
         return (
           <div>
 
