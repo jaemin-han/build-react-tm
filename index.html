@@ -9,6 +9,31 @@
 <body>
   <div id='app'></div>
 
+  <script>
+      window.API = {
+          fetchFriends() {
+              return new Promise((res, rej) => {
+                  const friends = [
+                    {
+                        name: 'Jordyn',
+                        active: true,
+                    },
+                    {
+                        name: 'Mikenzi',
+                        active: true,
+                    },
+                    {
+                        name: 'Jake',
+                        active: false,
+                    }
+                ]
+
+                setTimeout(() => res(friends) , 2000)
+              })
+          }
+      }
+  </script>
+
   <script type='text/babel'>
 
     function ActiveFriends (props) {
@@ -51,28 +76,35 @@
         constructor(props) {
             super(props)
             this.state = {
-            friends: [
-                    {
-                        name: 'Jordyn',
-                        active: true
-                    },
-                    {
-                        name: 'Mikenzi',
-                        active: true
-                    },
-                    {
-                        name: 'Jake',
-                        active: false
-                    }
-                ],
+            friends: [],
             input: '',
             }
             this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
             this.updateInput = this.updateInput.bind(this)
             this.handleAddFriend = this.handleAddFriend.bind(this)
             this.handleToggleFriend = this.handleToggleFriend.bind(this)
-
+            
+            console.log('--constructor--')
         }
+        
+        componentDidMount() {
+            console.log('--componentDidMount--')
+
+            API.fetchFriends()
+                .then((friends) => {
+                    // console.log('FRIENDS', friends) 
+                    this.setState({
+                        friends
+                    })
+                })
+        }
+        componentDidUpdate() {
+            console.log('--componentDidUpdate--')
+        }
+        componentWillUnmount() {
+            console.log('--componentWillUnmount--')
+        }
+
         handleAddFriend() {
             this.setState((currentState) => {
             return {
@@ -119,31 +151,42 @@
 
 
       render() {
+          console.log('--render--')
         return (
           <div>
+
             <input
               type='text'
               placeholder='new friend'
               value={this.state.input}
               onChange={this.updateInput}
             />
+
             <button onClick={this.handleAddFriend}>
               Submit
             </button>
+
             <div>
+            {/* 1. when this button is click, go ahead and run this function that is passed on through onClick
+            2. setState
+            3. set friend with an empty array */}
                 <button onClick={() => this.setState({
                     friends: []
-                })}>Clear All</button>
+                    })}>Clear All
+                </button>
             </div>
+
             <ActiveFriends
             list={this.state.friends.filter((friend) => friend.active === true)}
             onRemoveFriend={this.handleRemoveFriend}
             onToggleFriend={this.handleToggleFriend}
             />
+
             <InactiveFriends
             list={this.state.friends.filter((friend) => friend.active === false)}
             onToggleFriend={this.handleToggleFriend}
             />
+
           </div>
         )
       }
